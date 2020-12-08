@@ -62,6 +62,4 @@ $HOME
 
 - [Taskbook (task and notes command line)](https://github.com/klaussinani/taskbook)
 
-_Quality is more important then quantity!_
-
 ![utd](screenshots/utd.png)

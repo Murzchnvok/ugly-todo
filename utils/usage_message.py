@@ -55,6 +55,4 @@ USAGE_MESSAGE = f"""{attr(1)}see the examples below{attr(0)}
 {attr(1)}Delete all completed tasks:{attr(0)}
 ~$ {attr(1)}{fg(2)}%(prog)s {fg(4)}--clear{attr(0)}
 
- Type 'ugly -h' to get started!
-
 """

@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+
+import json
+import os
+import pathlib
+import sys
+
+try:
+    from colored import attr, fg
+except:
+    print("Module 'colored' not installed.")
+    print("Run: pip3 install -r requirements.txt")
+    sys.exit(0)
+
+PROGRAM_NAME = pathlib.Path(__file__).name
+
+
+class Task:
+    def __init__(self):
+        self.TASK_FILE = os.path.join(os.getenv("HOME"), ".ugly-tasks.json")
+        self.ugly_list = {}
+
+        try:
+            f = open(self.TASK_FILE, "r+")
+            self.ugly_list = json.loads(f.read())
+            f.close()
+        except FileNotFoundError:
+            f = open(self.TASK_FILE, "w+")
+            f.write("{}")
+            f.close()
+        except json.decoder.JSONDecodeError:
+            pass
+
+    def add(self, task, priority):
+        task_name = [task_name for task_name in task if not task_name.startswith("@")]
+        tag = [tag for tag in task if tag.startswith("@")]
+
+        task_name = " ".join(task_name)
+        tag = " ".join(tag)
+
+        _id = self.set_id()
+        self.ugly_list[_id] = {
+            "_id": _id,
+            "task": task_name.strip(),
+            "tag": tag.strip(),
+            "priority": priority,
+            "is_complete": False,
+            "is_task": True,
+        }
+        self.save_to_json()
+
+        return
+
+    def note(self, note):
+        note = " ".join(note)
+        _id = self.set_id()
+        self.ugly_list[_id] = {"_id": _id, "note": note.strip(), "is_task": False}
+        self.save_to_json()
+
+        return
+
+    def check(self, _ids):
+        for _id in _ids:
+            try:
+                self.ugly_list[str(_id)]["is_complete"] = (
+                    False if self.ugly_list[str(_id)]["is_complete"] else True
+                )
+                self.save_to_json()
+            except KeyError:
+                print(
+                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: {fg(6)}{_id}{attr(0)}"
+                )
+
+        return
+
+    def remove(self, _ids):
+        for _id in _ids:
+            try:
+                self.ugly_list.pop(_id)
+                self.save_to_json()
+            except KeyError:
+                print(
+                    f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item with id: {fg(6)}{_id}{attr(0)}"
+                )
+
+        return
+
+    def clear(self):
+        _ids = []
+        for k, v in self.ugly_list.items():
+            if v.get("is_complete"):
+                _ids.append(k)
+
+        if _ids:
+            for _id in _ids:
+                self.ugly_list.pop(_id)
+        else:
+            print(f"\n {fg(1)}{attr(0)} {attr(1)}No task to be deleted.{attr(0)}")
+        self.save_to_json()
+
+        return
+
+    def show(self):
+        if self.ugly_list:
+            tasks = []
+            notes = []
+
+            completed_tasks = 0
+            incompleted_tasks = 0
+
+            for _, v in self.ugly_list.items():
+                if v.get("is_task"):
+                    completed_tasks += 1
+                    if v.get("is_complete"):
+                        incompleted_tasks += 1
+                    _id = v["_id"]
+                    task = v["task"]
+                    tag = v["tag"]
+                    priority = v["priority"]
+                    is_complete = v["is_complete"]
+
+                    is_complete = (
+                        f"{fg(2)}{fg(59)}" if is_complete else f"{fg(4)}{fg(7)}"
+                    )
+
+                    if priority == "1":
+                        priority = f"{fg(1)}{attr(0)}"
+                    elif priority == "2":
+                        priority = f"{fg(2)}{attr(0)}"
+                    else:
+                        priority = f"{fg(4)}{attr(0)}"
+
+                    tasks.append(
+                        f"   {priority}  {fg(59)}{_id}. {is_complete}  {task} {fg(59)}{tag}{attr(0)}"
+                    )
+                else:
+                    _id = v["_id"]
+                    note = v["note"]
+                    notes.append(f"   {fg(6)}  {fg(59)}{_id}. {fg(7)}{note} {attr(0)}")
+
+            if tasks:
+                print(
+                    f"\n {attr(4)}My Board {fg(59)}[{incompleted_tasks}/{completed_tasks}]{attr(0)}"
+                )
+                for task in tasks:
+                    print(task)
+
+            if notes:
+                print(f"\n {attr(4)}Notes{attr(0)}")
+                for note in notes:
+                    print(note)
+        else:
+            print(
+                f"\n {fg(2)}{attr(0)}  {attr(1)}No task/note has been created.{attr(0)}"
+            )
+
+        return
+
+    def set_id(self):
+        try:
+            _id = max(k for k, _ in self.ugly_list.items())
+            _id = int(_id) + 1
+            return str(_id)
+        except ValueError:
+            return "1"
+
+    def save_to_json(self):
+        with open(self.TASK_FILE, "w") as f:
+            json.dump(self.ugly_list, f, indent=True)
+            f.close()
+        return

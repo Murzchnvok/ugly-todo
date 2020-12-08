@@ -55,7 +55,7 @@ Remember to keep updated:
 
 ```bash
 $HOME
--> cd $HOME/utd && git pull
+-> cd $HOME/ugly-todo && git pull
 ```
 
 ## You might be interested

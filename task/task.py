@@ -123,10 +123,6 @@ class Task:
             tasks_done = []
             notes = []
 
-            show_task = Template(
-                f"     %priority  {fg(59)}%_id. %is_complete_icon  %task {fg(59)}%tag{attr(0)}"
-            )
-
             completed_tasks = 0
             incompleted_tasks = 0
 
@@ -153,6 +149,9 @@ class Task:
                     else:
                         priority = f"{fg(4)}{attr(0)}"
 
+                    show_task = Template(
+                        f"     {priority}  {fg(59)}{_id}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
+                    )
                     if in_progress:
                         tasks_in_progress.append(
                             show_task.substitute(

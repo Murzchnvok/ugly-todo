@@ -62,11 +62,14 @@ class Task:
         return
 
     def check(self, _ids):
+        task = self.ugly_list
         for _id in _ids:
             try:
-                self.ugly_list[str(_id)]["is_complete"] = (
-                    False if self.ugly_list[str(_id)]["is_complete"] else True
-                )
+                if task[str(_id)]["is_complete"]:
+                    task[str(_id)]["is_complete"] = False
+                else:
+                    task[str(_id)]["is_complete"] = True
+                    task[str(_id)]["in_progress"] = False
                 self.save_to_json()
             except KeyError:
                 print(

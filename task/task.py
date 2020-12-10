@@ -4,6 +4,7 @@ import json
 import os
 import pathlib
 import sys
+from string import Template
 
 try:
     from colored import attr, fg
@@ -44,8 +45,9 @@ class Task:
             "task": task_name.strip(),
             "tag": tag.strip(),
             "priority": priority,
-            "is_complete": False,
             "is_task": True,
+            "is_complete": False,
+            "in_progress": False,
         }
         self.save_to_json()
 
@@ -69,6 +71,20 @@ class Task:
             except KeyError:
                 print(
                     f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: {fg(6)}{_id}{attr(0)}"
+                )
+
+        return
+
+    def begin(self, _ids):
+        for _id in _ids:
+            try:
+                self.ugly_list[str(_id)]["in_progress"] = (
+                    False if self.ugly_list[str(_id)]["in_progress"] else True
+                )
+                self.save_to_json()
+            except KeyError:
+                print(
+                    f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item with id: {fg(6)}{_id}{attr(0)}"
                 )
 
         return
@@ -103,7 +119,13 @@ class Task:
     def show(self):
         if self.ugly_list:
             tasks = []
+            tasks_in_progress = []
+            tasks_done = []
             notes = []
+
+            show_task = Template(
+                f"     %priority  {fg(59)}%_id. %is_complete_icon  %task {fg(59)}%tag{attr(0)}"
+            )
 
             completed_tasks = 0
             incompleted_tasks = 0
@@ -118,8 +140,9 @@ class Task:
                     tag = v["tag"]
                     priority = v["priority"]
                     is_complete = v["is_complete"]
+                    in_progress = v["in_progress"]
 
-                    is_complete = (
+                    is_complete_icon = (
                         f"{fg(2)}{fg(59)}" if is_complete else f"{fg(4)}{fg(7)}"
                     )
 
@@ -130,23 +153,61 @@ class Task:
                     else:
                         priority = f"{fg(4)}{attr(0)}"
 
-                    tasks.append(
-                        f"   {priority}  {fg(59)}{_id}. {is_complete}  {task} {fg(59)}{tag}{attr(0)}"
-                    )
+                    if in_progress:
+                        tasks_in_progress.append(
+                            show_task.substitute(
+                                priority=priority,
+                                _id=_id,
+                                is_complete=is_complete,
+                                task=task,
+                                tag=tag,
+                            )
+                        )
+                    elif is_complete:
+                        tasks_done.append(
+                            show_task.substitute(
+                                priority=priority,
+                                _id=_id,
+                                is_complete=is_complete,
+                                task=task,
+                                tag=tag,
+                            )
+                        )
+                    else:
+                        tasks.append(
+                            show_task.substitute(
+                                priority=priority,
+                                _id=_id,
+                                is_complete=is_complete,
+                                task=task,
+                                tag=tag,
+                            )
+                        )
                 else:
                     _id = v["_id"]
                     note = v["note"]
                     notes.append(f"   {fg(6)}  {fg(59)}{_id}. {fg(7)}{note} {attr(0)}")
 
+            print(
+                f"\n {attr(1)}My Board {fg(59)}[{incompleted_tasks}/{completed_tasks}]{attr(0)}"
+            )
             if tasks:
-                print(
-                    f"\n {attr(4)}My Board {fg(59)}[{incompleted_tasks}/{completed_tasks}]{attr(0)}"
-                )
+                print(f"\n   {attr(1)}To-Do{attr(0)}")
                 for task in tasks:
                     print(task)
 
+            if tasks_in_progress:
+                print(f"\n   {attr(1)}In Progress{attr(0)}")
+                for task in tasks_in_progress:
+                    print(task)
+
+            if tasks_done:
+                print(f"\n   {attr(1)}Done{attr(0)}")
+                for task in tasks_done:
+                    print(task)
+
             if notes:
-                print(f"\n {attr(4)}Notes{attr(0)}")
+                print(f"\n {attr(1)}Notes{attr(0)}")
                 for note in notes:
                     print(note)
         else:

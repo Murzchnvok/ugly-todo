@@ -47,6 +47,14 @@ parser.add_argument(
     help="Check/uncheck task as complete",
 )
 parser.add_argument(
+    "-b",
+    metavar="id",
+    dest="begin",
+    type=str,
+    nargs="*",
+    help="Start/Stop task",
+)
+parser.add_argument(
     "-d",
     metavar="id",
     dest="remove",

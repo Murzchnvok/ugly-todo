@@ -15,6 +15,9 @@ if __name__ == "__main__":
     elif args.check:
         t.check(args.check)
 
+    elif args.begin:
+        t.begin(args.begin)
+
     elif args.remove:
         t.remove(args.remove)
 

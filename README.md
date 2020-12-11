@@ -44,6 +44,13 @@ $HOME/Projects
 
 ### Running
 
+First run this in the **ugly-todo** folder:
+
+```bash
+$HOME/ugly-todo
+-> pip3 install -r requirements.txt
+```
+
 Open a new terminal and run (you'll find help in there):
 
 ```bash

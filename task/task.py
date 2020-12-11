@@ -49,6 +49,7 @@ class Task:
             "is_complete": False,
             "in_progress": False,
         }
+        print(f"\n {fg(2)}{attr(0)} {attr(1)}Task created: {fg(6)}{_id}{attr(0)}")
         self.save_to_json()
 
         return
@@ -57,6 +58,7 @@ class Task:
         note = " ".join(note)
         _id = self.set_id()
         self.ugly_list[_id] = {"_id": _id, "note": note.strip(), "is_task": False}
+        print(f"\n {fg(2)}{attr(0)} {attr(1)}Note created: {fg(6)}{_id}{attr(0)}")
         self.save_to_json()
 
         return
@@ -65,11 +67,14 @@ class Task:
         task = self.ugly_list
         for _id in _ids:
             try:
-                if task[str(_id)]["is_complete"]:
-                    task[str(_id)]["is_complete"] = False
+                if not task[str(_id)]["is_complete"]:
+                    task[str(_id)]["is_complete"], task[str(_id)]["in_progress"] = (
+                        True,
+                        False,
+                    )
+
                 else:
-                    task[str(_id)]["is_complete"] = True
-                    task[str(_id)]["in_progress"] = False
+                    task[str(_id)]["is_complete"] = False
                 self.save_to_json()
             except KeyError:
                 print(
@@ -79,11 +84,17 @@ class Task:
         return
 
     def begin(self, _ids):
+        task = self.ugly_list
         for _id in _ids:
             try:
-                self.ugly_list[str(_id)]["in_progress"] = (
-                    False if self.ugly_list[str(_id)]["in_progress"] else True
-                )
+                if not task[str(_id)]["in_progress"]:
+                    task[str(_id)]["in_progress"], task[str(_id)]["is_complete"] = (
+                        True,
+                        False,
+                    )
+
+                else:
+                    task[str(_id)]["in_progress"] = False
                 self.save_to_json()
             except KeyError:
                 print(
@@ -96,6 +107,9 @@ class Task:
         for _id in _ids:
             try:
                 self.ugly_list.pop(_id)
+                print(
+                    f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item: {fg(6)}{_id}{attr(0)}"
+                )
                 self.save_to_json()
             except KeyError:
                 print(
@@ -111,11 +125,9 @@ class Task:
                 _ids.append(k)
 
         if _ids:
-            for _id in _ids:
-                self.ugly_list.pop(_id)
+            self.remove(_ids)
         else:
             print(f"\n {fg(1)}{attr(0)} {attr(1)}No task to be deleted.{attr(0)}")
-        self.save_to_json()
 
         return
 
@@ -153,7 +165,7 @@ class Task:
                         priority = f"{fg(4)}{attr(0)}"
 
                     show_task = Template(
-                        f"     {priority}  {fg(59)}{_id}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
+                        f"     {priority}  {fg(59)}{_id:2}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
                     )
                     if in_progress:
                         tasks_in_progress.append(
@@ -188,7 +200,9 @@ class Task:
                 else:
                     _id = v["_id"]
                     note = v["note"]
-                    notes.append(f"   {fg(6)}  {fg(59)}{_id}. {fg(7)}{note} {attr(0)}")
+                    notes.append(
+                        f"   {fg(6)}  {fg(59)}{_id:2}. {fg(7)}{note} {attr(0)}"
+                    )
 
             print(
                 f"\n {attr(1)}My Board {fg(59)}[{incompleted_tasks}/{completed_tasks}]{attr(0)}"

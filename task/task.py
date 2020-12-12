@@ -160,7 +160,7 @@ class Task:
                         priority = f"{fg(4)}{attr(0)}"
 
                     task_template = Template(
-                        f"     {priority}  {fg(59)}{_id:2}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
+                        f"     {priority} {fg(59)}{_id:>2}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
                     )
                     if in_progress:
                         tasks_in_progress.append(

@@ -51,16 +51,12 @@ class Task:
         print(f"\n {fg(2)}{attr(0)} {attr(1)}Task created: {fg(6)}{_id}{attr(0)}")
         self.save_to_json()
 
-        return
-
     def note(self, note):
         note = " ".join(note)
         _id = self.set_id()
         self.ugly_list[_id] = {"_id": _id, "note": note.strip(), "is_task": False}
         print(f"\n {fg(2)}{attr(0)} {attr(1)}Note created: {fg(6)}{_id}{attr(0)}")
         self.save_to_json()
-
-        return
 
     def check(self, _ids):
         task = self.ugly_list
@@ -71,16 +67,14 @@ class Task:
                         True,
                         False,
                     )
-
                 else:
                     task[str(_id)]["is_complete"] = False
                 self.save_to_json()
             except KeyError:
                 print(
-                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: {fg(6)}{_id}{attr(0)}"
+                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: "
+                    f"{fg(6)}{_id}{attr(0)}"
                 )
-
-        return
 
     def begin(self, _ids):
         task = self.ugly_list
@@ -91,16 +85,14 @@ class Task:
                         True,
                         False,
                     )
-
                 else:
                     task[str(_id)]["in_progress"] = False
                 self.save_to_json()
             except KeyError:
                 print(
-                    f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item with id: {fg(6)}{_id}{attr(0)}"
+                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: "
+                    f"{fg(6)}{_id}{attr(0)}"
                 )
-
-        return
 
     def remove(self, _ids):
         deleted_items = []
@@ -113,17 +105,17 @@ class Task:
             except KeyError:
                 not_found.append(_id)
 
-        print(
-            f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item(s): "
-            f"{fg(6)}{' '.join(deleted_items)}{attr(0)}"
-        ) if deleted_items else ""
+        if deleted_items:
+            print(
+                f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item(s): "
+                f"{fg(6)}{' '.join(deleted_items)}{attr(0)}"
+            )
 
-        print(
-            f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item(s) with id(s): "
-            f"{fg(6)}{' '.join(not_found)}{attr(0)}"
-        ) if not_found else ""
-
-        return
+        if not_found:
+            print(
+                f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item(s) with id(s): "
+                f"{fg(6)}{' '.join(not_found)}{attr(0)}"
+            )
 
     def clear(self):
         _ids = []
@@ -131,12 +123,9 @@ class Task:
             if v.get("is_complete"):
                 _ids.append(k)
 
-        if _ids:
-            self.remove(_ids)
-        else:
-            print(f"\n {fg(1)}{attr(0)} {attr(1)}No task to be deleted.{attr(0)}")
-
-        return
+        self.remove(_ids) if _ids else print(
+            f"\n {fg(1)}{attr(0)} {attr(1)}No task to be deleted.{attr(0)}"
+        )
 
     def show(self):
         if self.ugly_list:
@@ -242,26 +231,22 @@ class Task:
 
     def set_id(self):
         try:
-            _id = max(k for k, _ in self.ugly_list.items())
-            _id = int(_id) + 1
-            return str(_id)
+            _id = int(max(k for k, _ in self.ugly_list.items()))
+            return str(_id + 1)
         except ValueError:
             return "1"
 
     def sort_ids(self):
         ugly_list = {}
-        tasks = list(reversed(self.ugly_list.values()))
-        for _id in range(1, len(tasks) + 1):
-            ugly_list[str(_id)] = tasks.pop()
+        task_values = list(reversed(self.ugly_list.values()))
+        for _id in range(1, len(task_values) + 1):
+            ugly_list[str(_id)] = task_values.pop()
+
         self.ugly_list.clear()
         self.ugly_list = ugly_list
         print(f"\n {fg(2)}{attr(0)} {attr(1)}ID(s) sorted{attr(0)}")
+
         self.save_to_json()
 
-        return
-
     def save_to_json(self):
-        with open(self.TASK_FILE, "w") as f:
-            json.dump(self.ugly_list, f, indent=True)
-            f.close()
-        return
+        json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=True)

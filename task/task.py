@@ -139,9 +139,9 @@ class Task:
             for k, v in self.ugly_list.items():
                 _id = k
                 if v.get("is_task"):
-                    completed_tasks += 1
+                    incompleted_tasks += 1
                     if v.get("is_complete"):
-                        incompleted_tasks += 1
+                        completed_tasks += 1
                     task = v["task"]
                     tag = v["tag"]
                     priority = v["priority"]
@@ -159,12 +159,12 @@ class Task:
                     else:
                         priority = f"{fg(4)}{attr(0)}"
 
-                    show_task = Template(
+                    task_template = Template(
                         f"     {priority}  {fg(59)}{_id:2}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
                     )
                     if in_progress:
                         tasks_in_progress.append(
-                            show_task.substitute(
+                            task_template.substitute(
                                 priority=priority,
                                 _id=_id,
                                 is_complete=is_complete,
@@ -174,7 +174,7 @@ class Task:
                         )
                     elif is_complete:
                         tasks_done.append(
-                            show_task.substitute(
+                            task_template.substitute(
                                 priority=priority,
                                 _id=_id,
                                 is_complete=is_complete,
@@ -184,7 +184,7 @@ class Task:
                         )
                     else:
                         tasks.append(
-                            show_task.substitute(
+                            task_template.substitute(
                                 priority=priority,
                                 _id=_id,
                                 is_complete=is_complete,
@@ -199,7 +199,7 @@ class Task:
                     )
 
             print(
-                f"\n {attr(1)}My Board {fg(59)}[{incompleted_tasks}/{completed_tasks}]{attr(0)}"
+                f"\n {attr(1)}My Board {fg(59)}[{completed_tasks}/{incompleted_tasks}]{attr(0)}"
             )
             if tasks:
                 print(f"\n   {attr(1)}To-Do{attr(0)}")
@@ -224,8 +224,6 @@ class Task:
             print(
                 f"\n {fg(2)}{attr(0)}  {attr(1)}No task/note has been created.{attr(0)}"
             )
-
-        return
 
     def set_id(self):
         try:

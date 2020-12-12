@@ -33,11 +33,10 @@ class Task:
             pass
 
     def add(self, task, priority):
-        task_name = [task_name for task_name in task if not task_name.startswith("@")]
-        tag = [tag for tag in task if tag.startswith("@")]
-
-        task_name = " ".join(task_name)
-        tag = " ".join(tag)
+        task_name = " ".join(
+            [task_name for task_name in task if not task_name.startswith("@")]
+        )
+        tag = " ".join([tag for tag in task if tag.startswith("@")])
 
         _id = self.set_id()
         self.ugly_list[_id] = {
@@ -54,7 +53,7 @@ class Task:
     def note(self, note):
         note = " ".join(note)
         _id = self.set_id()
-        self.ugly_list[_id] = {"_id": _id, "note": note.strip(), "is_task": False}
+        self.ugly_list[_id] = {"note": note.strip(), "is_task": False}
         print(f"\n {fg(2)}{attr(0)} {attr(1)}Note created: {fg(6)}{_id}{attr(0)}")
         self.save_to_json()
 
@@ -194,7 +193,6 @@ class Task:
                             )
                         )
                 else:
-                    _id = v["_id"]
                     note = v["note"]
                     notes.append(
                         f"   {fg(6)}  {fg(59)}{_id:2}. {fg(7)}{note} {attr(0)}"
@@ -231,7 +229,7 @@ class Task:
 
     def set_id(self):
         try:
-            _id = int(max(k for k, _ in self.ugly_list.items()))
+            _id = max(int(k) for k, _ in self.ugly_list.items())
             return str(_id + 1)
         except ValueError:
             return "1"

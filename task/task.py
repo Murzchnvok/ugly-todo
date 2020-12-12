@@ -134,12 +134,12 @@ class Task:
             notes = []
 
             completed_tasks = 0
-            incompleted_tasks = 0
+            total_tasks = 0
 
             for k, v in self.ugly_list.items():
                 _id = k
                 if v.get("is_task"):
-                    incompleted_tasks += 1
+                    total_tasks += 1
                     if v.get("is_complete"):
                         completed_tasks += 1
                     task = v["task"]
@@ -199,7 +199,7 @@ class Task:
                     )
 
             print(
-                f"\n {attr(1)}My Board {fg(59)}[{completed_tasks}/{incompleted_tasks}]{attr(0)}"
+                f"\n {attr(1)}My Board {fg(59)}[{completed_tasks}/{total_tasks}]{attr(0)}"
             )
             if tasks:
                 print(f"\n   {attr(1)}To-Do{attr(0)}")

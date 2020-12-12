@@ -24,5 +24,8 @@ if __name__ == "__main__":
     elif args.clear:
         t.clear()
 
+    elif args.sort:
+        t.sort_ids()
+
     else:
         t.show()

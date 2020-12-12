@@ -68,5 +68,11 @@ parser.add_argument(
     dest="clear",
     help="delete all completed tasks",
 )
+parser.add_argument(
+    "--sort",
+    action="store_true",
+    dest="sort",
+    help="sort all tasks/notes ids",
+)
 
 args = parser.parse_args()

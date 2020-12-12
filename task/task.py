@@ -41,7 +41,6 @@ class Task:
 
         _id = self.set_id()
         self.ugly_list[_id] = {
-            "_id": _id,
             "task": task_name.strip(),
             "tag": tag.strip(),
             "priority": priority,
@@ -104,17 +103,25 @@ class Task:
         return
 
     def remove(self, _ids):
+        deleted_items = []
+        not_found = []
         for _id in _ids:
             try:
                 self.ugly_list.pop(_id)
-                print(
-                    f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item: {fg(6)}{_id}{attr(0)}"
-                )
+                deleted_items.append(_id)
                 self.save_to_json()
             except KeyError:
-                print(
-                    f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item with id: {fg(6)}{_id}{attr(0)}"
-                )
+                not_found.append(_id)
+
+        print(
+            f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item(s): "
+            f"{fg(6)}{' '.join(deleted_items)}{attr(0)}"
+        ) if deleted_items else ""
+
+        print(
+            f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item(s) with id(s): "
+            f"{fg(6)}{' '.join(not_found)}{attr(0)}"
+        ) if not_found else ""
 
         return
 
@@ -141,12 +148,12 @@ class Task:
             completed_tasks = 0
             incompleted_tasks = 0
 
-            for _, v in self.ugly_list.items():
+            for k, v in self.ugly_list.items():
+                _id = k
                 if v.get("is_task"):
                     completed_tasks += 1
                     if v.get("is_complete"):
                         incompleted_tasks += 1
-                    _id = v["_id"]
                     task = v["task"]
                     tag = v["tag"]
                     priority = v["priority"]
@@ -240,6 +247,17 @@ class Task:
             return str(_id)
         except ValueError:
             return "1"
+
+    def sort_ids(self):
+        ugly_list = {}
+        tasks = list(reversed(self.ugly_list.values()))
+        for _id in range(1, len(tasks) + 1):
+            ugly_list[str(_id)] = tasks.pop()
+        self.ugly_list.clear()
+        self.ugly_list = ugly_list
+        self.save_to_json()
+
+        return
 
     def save_to_json(self):
         with open(self.TASK_FILE, "w") as f:

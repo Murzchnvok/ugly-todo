@@ -159,39 +159,16 @@ class Task:
                     else:
                         priority = f"{fg(4)}{attr(0)}"
 
-                    task_template = Template(
-                        f"     {priority} {fg(59)}{_id:>2}. {is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
+                    task_template = (
+                        f"     {priority} {fg(59)}{_id:>2}. "
+                        f"{is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
                     )
                     if in_progress:
-                        tasks_in_progress.append(
-                            task_template.substitute(
-                                priority=priority,
-                                _id=_id,
-                                is_complete=is_complete,
-                                task=task,
-                                tag=tag,
-                            )
-                        )
+                        tasks_in_progress.append(task_template)
                     elif is_complete:
-                        tasks_done.append(
-                            task_template.substitute(
-                                priority=priority,
-                                _id=_id,
-                                is_complete=is_complete,
-                                task=task,
-                                tag=tag,
-                            )
-                        )
+                        tasks_done.append(task_template)
                     else:
-                        tasks.append(
-                            task_template.substitute(
-                                priority=priority,
-                                _id=_id,
-                                is_complete=is_complete,
-                                task=task,
-                                tag=tag,
-                            )
-                        )
+                        tasks.append(task_template)
                 else:
                     note = v["note"]
                     notes.append(

@@ -76,4 +76,7 @@ USAGE_MESSAGE = f"""{attr(1)}see the examples below{attr(0)}
 {attr(1)}Delete all completed tasks:{attr(0)}
 ~$ {attr(1)}{fg(2)}%(prog)s {fg(4)}--clear{attr(0)}
 
+{attr(1)}Sort the ids (old ids: 3, 7, 9, new ids: 1, 2, 3):{attr(0)}
+~$ {attr(1)}{fg(2)}%(prog)s {fg(4)}--sort{attr(0)}
+
 """

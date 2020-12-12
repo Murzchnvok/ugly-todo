@@ -255,6 +255,7 @@ class Task:
             ugly_list[str(_id)] = tasks.pop()
         self.ugly_list.clear()
         self.ugly_list = ugly_list
+        print(f"\n {fg(2)}{attr(0)} {attr(1)}ID(s) sorted{attr(0)}")
         self.save_to_json()
 
         return

@@ -148,7 +148,7 @@ class Task:
                     in_progress = v["in_progress"]
 
                     is_complete_icon = (
-                        f"{fg(2)}{fg(59)}" if is_complete else f"{fg(4)}{fg(7)}"
+                        f"{fg(2)}{fg(4)}" if is_complete else f"{fg(4)}{fg(7)}"
                     )
 
                     if priority == "1":
@@ -156,11 +156,11 @@ class Task:
                     elif priority == "2":
                         priority = f"{fg(2)}{attr(0)}"
                     else:
-                        priority = f"{fg(4)}{attr(0)}"
+                        priority = f"{fg(5)}{attr(0)}"
 
                     task_template = (
-                        f"     {priority} {fg(59)}{_id:>2}. "
-                        f"{is_complete_icon}  {task} {fg(59)}{tag}{attr(0)}"
+                        f"     {priority} {fg(4)}{_id:>2}. "
+                        f"{is_complete_icon}  {task} {fg(5)}{tag}{attr(0)}"
                     )
                     if in_progress:
                         tasks_in_progress.append(task_template)
@@ -171,11 +171,11 @@ class Task:
                 else:
                     note = v["note"]
                     notes.append(
-                        f"   {fg(6)}  {fg(59)}{_id:2}. {fg(7)}{note} {attr(0)}"
+                        f"   {fg(6)}  {fg(4)}{_id:2}. {fg(7)}{note} {attr(0)}"
                     )
 
             print(
-                f"\n {attr(1)}My Board {fg(59)}[{completed_tasks}/{total_tasks}]{attr(0)}"
+                f"\n {attr(1)}My Board {fg(5)}[{completed_tasks}/{total_tasks}]{attr(0)}"
             )
             if tasks:
                 print(f"\n   {attr(1)}To-Do{attr(0)}")

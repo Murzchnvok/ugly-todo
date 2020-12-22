@@ -21,39 +21,35 @@ class Task:
         self.ugly_list = {}
 
         try:
-            f = open(self.TASK_FILE, "r+")
-            self.ugly_list = json.loads(f.read())
-            f.close()
+            with open(self.TASK_FILE, "r+") as f:
+                self.ugly_list = json.loads(f.read())
         except FileNotFoundError:
-            f = open(self.TASK_FILE, "w+")
-            f.write("{}")
-            f.close()
+            with open(self.TASK_FILE, "w+") as f:
+                f.write("{}")
         except json.decoder.JSONDecodeError:
             pass
 
     def add(self, task, priority):
-        task_name = " ".join(
-            [task_name for task_name in task if not task_name.startswith("@")]
-        )
-        tag = " ".join([tag for tag in task if tag.startswith("@")])
+        task_name = " ".join([t for t in task if not t.startswith("@")]).strip()
+        tag = " ".join([t for t in task if t.startswith("@")]).strip()
 
         _id = self.set_id()
         self.ugly_list[_id] = {
-            "task": task_name.strip(),
-            "tag": tag.strip(),
+            "task": task_name,
+            "tag": tag,
             "priority": priority,
             "is_task": True,
             "is_complete": False,
             "in_progress": False,
         }
-        print(f"\n {fg(2)}{attr(0)} {attr(1)}Task created: {fg(6)}{_id}{attr(0)}")
+        self.notify("Task created: ", _id)
         self.save_to_json()
 
     def note(self, note):
         note = " ".join(note)
         _id = self.set_id()
         self.ugly_list[_id] = {"note": note.strip(), "is_task": False}
-        print(f"\n {fg(2)}{attr(0)} {attr(1)}Note created: {fg(6)}{_id}{attr(0)}")
+        self.notify("Note created: ", _id)
         self.save_to_json()
 
     def check(self, _ids):
@@ -69,10 +65,7 @@ class Task:
                     task[str(_id)]["is_complete"] = False
                 self.save_to_json()
             except KeyError:
-                print(
-                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: "
-                    f"{fg(6)}{_id}{attr(0)}"
-                )
+                self.notify("It's a note or unable to find item(s): ", _id, error=True)
 
     def begin(self, _ids):
         task = self.ugly_list
@@ -87,10 +80,7 @@ class Task:
                     task[str(_id)]["in_progress"] = False
                 self.save_to_json()
             except KeyError:
-                print(
-                    f"\n {fg(1)}{attr(0)} {attr(1)}It's a note or unable to find item with id: "
-                    f"{fg(6)}{_id}{attr(0)}"
-                )
+                self.notify("It's a note or unable to find item(s): ", _id, error=True)
 
     def remove(self, _ids):
         deleted_items = []
@@ -104,16 +94,12 @@ class Task:
                 not_found.append(_id)
 
         if deleted_items:
-            print(
-                f"\n {fg(2)}{attr(0)} {attr(1)}Deleted item(s): "
-                f"{fg(6)}{' '.join(deleted_items)}{attr(0)}"
-            )
+            _id = " ".join(deleted_items)
+            self.notify("Deleted item(s): ", _id)
 
         if not_found:
-            print(
-                f"\n {fg(1)}{attr(0)} {attr(1)}Unable to find item(s) with id(s): "
-                f"{fg(6)}{' '.join(not_found)}{attr(0)}"
-            )
+            _id = " ".join(not_found)
+            self.notify("Unable to find item(s): ", _id, error=True)
 
     def clear(self):
         _ids = []
@@ -121,9 +107,7 @@ class Task:
             if v.get("is_complete"):
                 _ids.append(k)
 
-        self.remove(_ids) if _ids else print(
-            f"\n {fg(1)}{attr(0)} {attr(1)}No task to be deleted.{attr(0)}"
-        )
+        self.remove(_ids) if _ids else self.notify("No task to be deleted.", error=True)
 
     def show(self):
         if self.ugly_list:
@@ -216,8 +200,15 @@ class Task:
 
         self.ugly_list.clear()
         self.ugly_list = ugly_list
-        print(f"\n {fg(2)}{attr(0)} {attr(1)}ID(s) sorted{attr(0)}")
+        self.notify("ID(s) sorted")
         self.save_to_json()
 
     def save_to_json(self):
         json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=True)
+
+    def notify(self, message, _id=None, error=False):
+        icon = f"{fg(1)}{attr(0)}" if error else f"{fg(2)}{attr(0)}"
+        if _id:
+            print(f"\n {icon} {attr(1)}{message} {fg(6)}{_id}{attr(0)}")
+        else:
+            print(f"\n {icon} {attr(1)}{message}{attr(0)}")

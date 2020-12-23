@@ -42,14 +42,14 @@ class Task:
             "is_complete": False,
             "in_progress": False,
         }
-        self.notify("Task created: ", _id)
+        self.notify("Task created:", _id)
         self.save_to_json()
 
     def note(self, note):
         note = " ".join(note)
         _id = self.set_id()
         self.ugly_list[_id] = {"note": note.strip(), "is_task": False}
-        self.notify("Note created: ", _id)
+        self.notify("Note created:", _id)
         self.save_to_json()
 
     def check(self, _ids):
@@ -65,7 +65,7 @@ class Task:
                     task[str(_id)]["is_complete"] = False
                 self.save_to_json()
             except KeyError:
-                self.notify("It's a note or unable to find item(s): ", _id, error=True)
+                self.notify("It's a note or unable to find item(s):", _id, error=True)
 
     def begin(self, _ids):
         task = self.ugly_list
@@ -80,7 +80,7 @@ class Task:
                     task[str(_id)]["in_progress"] = False
                 self.save_to_json()
             except KeyError:
-                self.notify("It's a note or unable to find item(s): ", _id, error=True)
+                self.notify("It's a note or unable to find item(s):", _id, error=True)
 
     def remove(self, _ids):
         deleted_items = []
@@ -95,11 +95,11 @@ class Task:
 
         if deleted_items:
             _id = " ".join(deleted_items)
-            self.notify("Deleted item(s): ", _id)
+            self.notify("Deleted item(s):", _id)
 
         if not_found:
             _id = " ".join(not_found)
-            self.notify("Unable to find item(s): ", _id, error=True)
+            self.notify("Unable to find item(s):", _id, error=True)
 
     def clear(self):
         _ids = []
@@ -132,15 +132,15 @@ class Task:
                     in_progress = v["in_progress"]
 
                     is_complete_icon = (
-                        f"{fg(2)}{fg(8)}" if is_complete else f"{fg(4)}{fg(7)}"
+                        f"{fg(10)}{fg(8)}" if is_complete else f"{fg(12)}{fg(15)}"
                     )
 
                     if priority == "1":
-                        priority = f"{fg(1)}{attr(0)}"
+                        priority = f"{fg(9)}{attr(0)}"
                     elif priority == "2":
-                        priority = f"{fg(2)}{attr(0)}"
+                        priority = f"{fg(10)}{attr(0)}"
                     else:
-                        priority = f"{fg(4)}{attr(0)}"
+                        priority = f"{fg(12)}{attr(0)}"
 
                     task_template = (
                         f"     {priority} {fg(8)}{_id:>2}. "
@@ -155,7 +155,7 @@ class Task:
                 else:
                     note = v["note"]
                     notes.append(
-                        f"   {fg(6)}  {fg(4)}{_id:2}. {fg(7)}{note} {attr(0)}"
+                        f"   {fg(14)} {fg(8)}{_id:>2}. {fg(15)}{note} {attr(0)}"
                     )
 
             print(
@@ -207,8 +207,8 @@ class Task:
         json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=True)
 
     def notify(self, message, _id=None, error=False):
-        icon = f"{fg(1)}{attr(0)}" if error else f"{fg(2)}{attr(0)}"
+        icon = f"{fg(9)}{attr(0)}" if error else f"{fg(10)}{attr(0)}"
         if _id:
-            print(f"\n {icon} {attr(1)}{message} {fg(6)}{_id}{attr(0)}")
+            print(f"\n {icon} {attr(1)}{message} {fg(14)}{_id}{attr(0)}")
         else:
             print(f"\n {icon} {attr(1)}{message}{attr(0)}")

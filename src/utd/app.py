@@ -1,10 +1,9 @@
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
 
-from util.list_to_str import list_to_str
-from util.notify import notify
+from util import list_to_str, notify
 
 
 @dataclass
@@ -38,14 +37,14 @@ class UglyToDo:
 
     def set_id(self) -> str:
         try:
-            return str(int(max(self.ugly_list)) + 1)
+            return str(int(max([int(id_) for id_ in self.ugly_list])) + 1)
         except ValueError:
             return "1"
 
     def save_to_json(self) -> None:
         json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=True)
 
-    def format_task_tag(self, task: list[str]) -> Tuple[str, str]:
+    def format_task_tag(self, task: list[str]) -> tuple[str, str]:
         name: str = ""
         tags: str = ""
 

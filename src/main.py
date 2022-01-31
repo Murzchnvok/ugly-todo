@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+from parser import args
 
 from cli.app import show
 from utd.app import UglyToDo
-from util.parser import args
 
 
 def main():

@@ -1,6 +1,6 @@
 import argparse
 
-USAGE_MESSAGE = f"""a few examples
+USAGE_MESSAGE = """a few examples
 
 Creating task:
 ~$ %(prog)s -a simple task

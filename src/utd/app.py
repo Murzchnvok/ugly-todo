@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from util import list_to_str, notify
+from util import notify
 
 
 @dataclass
@@ -32,17 +32,14 @@ class UglyToDo:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             open(self.TASK_FILE, "w+").write("{}")
 
-    def get_ugly_list(self) -> dict[str, dict[str, Any]]:
-        return self.ugly_list
-
     def set_id(self) -> str:
         try:
-            return str(int(max([int(id_) for id_ in self.ugly_list])) + 1)
+            return str(max(int(id_) for id_ in self.ugly_list) + 1)
         except ValueError:
             return "1"
 
     def save_to_json(self) -> None:
-        json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=True)
+        json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=4)
 
     def format_task_tag(self, task: list[str]) -> tuple[str, str]:
         name: str = ""
@@ -59,15 +56,13 @@ class UglyToDo:
     def add_task(self, item: list[str], priority: str = "2") -> None:
         id_ = self.set_id()
         name, tags = self.format_task_tag(item)
-        task = Task(name, tags, priority)
-        self.ugly_list[id_] = task.__dict__
+        self.ugly_list[id_] = Task(name, tags, priority).__dict__
         notify(f"Task created: {id_}")
         self.save_to_json()
 
     def add_note(self, item: list[str]) -> None:
         id_ = self.set_id()
-        note = Note(list_to_str(item))
-        self.ugly_list[id_] = note.__dict__
+        self.ugly_list[id_] = Note(" ".join(item).strip()).__dict__
         notify(f"Note created: {id_}")
         self.save_to_json()
 

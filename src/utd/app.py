@@ -25,7 +25,7 @@ class Note:
 class UglyToDo:
     def __init__(self) -> None:
         self.TASK_FILE: Path = (Path(__file__).parent / "../.ugly-tasks.json").resolve()
-        self.ugly_list: dict[str, Any] = {}
+        self.ugly_list: dict[str, dict[str, Any]] = {}
 
         try:
             self.ugly_list = json.loads(open(self.TASK_FILE, "r+").read())

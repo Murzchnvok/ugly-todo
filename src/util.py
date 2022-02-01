@@ -13,7 +13,7 @@ notify_type = {
 def notify(message: str, type_: str = "success", padding: PaddingSize = (1, 1)) -> None:
     color, icon_suffix = notify_type[type_]
     type_ = f"[b {color}]:regional_indicator_{icon_suffix}:"
-    print(Padding(f"{type_} {message}", padding))
+    print(Padding(f"{type_}  {message}", padding))
 
 
 def list_to_str(list_: list[str]) -> str:

@@ -25,14 +25,14 @@ class Note:
 class UglyToDo:
     def __init__(self) -> None:
         self.TASK_FILE: Path = (Path(__file__).parent / "../.ugly-tasks.json").resolve()
-        self.ugly_list: dict[str, Any] = {}
+        self.ugly_list: dict[str, dict[str, Any]] = {}
 
         try:
             self.ugly_list = json.loads(open(self.TASK_FILE, "r+").read())
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             open(self.TASK_FILE, "w+").write("{}")
 
-    def get_ugly_list(self) -> dict[str, Any]:
+    def get_ugly_list(self) -> dict[str, dict[str, Any]]:
         return self.ugly_list
 
     def set_id(self) -> str:
@@ -122,7 +122,7 @@ class UglyToDo:
             notify("No task to be deleted.", "info")
 
     def sort_ids(self) -> None:
-        ugly_list_values: list[dict[str, Any]] = list(self.ugly_list.values())
+        ugly_list_values: list[Any] = list(self.ugly_list.values())
         self.ugly_list.clear()
 
         for value in ugly_list_values:

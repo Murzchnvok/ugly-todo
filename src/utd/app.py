@@ -117,7 +117,7 @@ class UglyToDo:
             notify("No task to be deleted.", "info")
 
     def sort_ids(self) -> None:
-        ugly_list_values: list[dict[str, Any]] = list(self.ugly_list.values())
+        ugly_list_values: list[Any] = list(self.ugly_list.values())
         self.ugly_list.clear()
 
         for value in ugly_list_values:

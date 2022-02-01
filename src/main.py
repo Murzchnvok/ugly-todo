@@ -33,7 +33,7 @@ def main():
         utd.sort_ids()
 
     else:
-        show(utd.get_ugly_list())
+        show(utd.ugly_list)
 
 
 if __name__ == "__main__":

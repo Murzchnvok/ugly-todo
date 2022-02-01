@@ -2,19 +2,22 @@ from typing import Any
 
 from rich import print
 from rich.padding import Padding
-from util.notify import notify
+from util import notify
+
+priority_type = {
+    "1": ("red", "anger_symbol"),
+    "2": ("green", "ophiuchus"),
+    "3": ("blue", "herb"),
+}
 
 
 def task_icons(is_done: bool, priority: str) -> tuple[str, str]:
-    is_done_icon = "[d green]" if is_done else "[blue]"
+    is_done_icon = "[blue]:heavy_minus_sign:"
+    if is_done:
+        is_done_icon = "[d green]:white_check_mark:"
 
-    match priority:
-        case "1":
-            priority = "[red]"
-        case "2":
-            priority = "[green]"
-        case _:
-            priority = "[blue]"
+    color, icon = priority_type[priority]
+    priority = f"[{color}]:{icon}:"
 
     return is_done_icon, priority
 
@@ -30,7 +33,7 @@ def show(ugly_list: dict[str, Any]) -> None:
             if item.get("is_task"):
                 name, tags, priority, _, is_done, in_progress = item.values()
                 is_done_icon, priority_icon = task_icons(is_done, priority)
-                task = f"{priority_icon} {id_:>2}. {is_done_icon} [b white]{name} [green]{tags}"
+                task = f"{priority_icon}{id_:>2}. {is_done_icon} [b white]{name} [green]{tags}"
 
                 if in_progress:
                     tasks_progress.append(task)
@@ -40,7 +43,7 @@ def show(ugly_list: dict[str, Any]) -> None:
                     tasks_todo.append(task)
             else:
                 name, _ = item.values()
-                notes.append(f"[blue] {id_:>2}. [b white]{name}")
+                notes.append(f"[blue]:four_leaf_clover:{id_:>2}. [b white]{name}")
 
         total_tasks = sum([len(tasks_todo), len(tasks_progress), len(tasks_done)])
         print(

@@ -42,6 +42,56 @@ Now create a symlink to the **main.py** script:
 ln -s $HOME/ugly-todo/src/main.py $HOME/bin/utd
 ```
 
+## Usage
+
+Help menu:
+
+```bash
+utd -h
+```
+
+Add a simple task:
+
+```bash
+utd -a simple task
+```
+
+Add a task with tag(s):
+
+```bash
+utd -a simple task with @tag
+```
+
+Add a task with tag(s) and priority:
+
+```bash
+utd -a not important task @tag @whatever -p 3
+```
+
+Add a note:
+
+```bash
+utd -n Keep Calm and STUDY
+```
+
+Using options from rich module:
+
+```bash
+utd -a Metropolis '[red]@book @read'
+```
+
+```bash
+utd -n Keep Calm and '[i s blue]HACK THE PLANET'
+```
+
+Some useful options:
+
+- [color] -> color name
+- [d] -> dim
+- [i] -> italic
+- [s] -> strike
+- [u] -> underline
+
 ## You might be interested
 
 - [Taskbook (task and notes command line)](https://github.com/klaussinani/taskbook)

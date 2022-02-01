@@ -12,7 +12,7 @@ notify_type = {
 
 def notify(message: str, type_: str = "success", padding: PaddingSize = (1, 1)) -> None:
     color, icon_suffix = notify_type[type_]
-    type_ = f"[b {color}]:regional_indicator_symbol_letter_{icon_suffix}:"
+    type_ = f"[b {color}]:regional_indicator_{icon_suffix}:"
     print(Padding(f"{type_} {message}", padding))
 
 

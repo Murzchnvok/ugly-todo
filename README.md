@@ -1,36 +1,35 @@
-# Ugly To-Do
+<h1 align="center">Ugly To-Do</h1>
+<h3 align="center">A nice way to create tasks and save notes offline from your terminal!</h3>
+<div align="center"><img src="screenshots/utd.png" /></div>
 
-My personal To-Do app. I made this based on Taskbook, one app that I really like, you'll find the link below. Nice that some people are using this app, prolly not much update for now on since it's doing what I had in mind, but maybe I'll make a GUI option soon.
+<p>This tool do just what I wanted it to do, but it's opensource and unlicense, so feel free to create your own version of this.</p>
 
-## Getting Started
+## Install
 
-### Prerequisites
-
-**_Every test and instalation process was done on Linux_**. You need to install Python3.10+ and [NerdFonts](https://www.nerdfonts.com/font-downloads):
-
-The font I'm using is **JetBrainsMono**
-
-To install this font on, copy/move to the folder _~/.fonts_ and run in the terminal:
+### PIP (recommended)
 
 ```bash
-$HOME
--> fc-cache -fv
+pip3 install -U utd
 ```
 
-### Cloning
+### Manual
 
-First you need to clone the repo:
+Clone the repo:
 
 ```bash
-$HOME
--> git clone https://github.com/Murzchnvok/ugly-todo
+git clone https://github.com/Murzchnvok/ugly-todo
+```
+
+Go to the ugly-todo folder and install the requirements:
+
+```bash
+pip3 install -r requirements.txt
 ```
 
 Create **bin** folder in the **$HOME** directory (if it doesn't exist):
 
 ```bash
-$HOME
--> mkdir $HOME/bin/
+mkdir $HOME/bin/
 ```
 
 _Add the **bin** folder to the **$PATH** variable!_
@@ -38,35 +37,9 @@ _Add the **bin** folder to the **$PATH** variable!_
 Now create a symlink to the **main.py** script:
 
 ```bash
-$HOME
--> ln -s $HOME/ugly-todo/src/main.py $HOME/bin/utd
-```
-
-### Running
-
-First run this in the **ugly-todo** folder:
-
-```bash
-$HOME/ugly-todo
--> pip3 install -r requirements.txt
-```
-
-Open a new terminal and run (you'll find help in there):
-
-```bash
-$HOME
--> utd -h
-```
-
-Remember to keep updated:
-
-```bash
-$HOME
--> cd $HOME/ugly-todo && git pull
+ln -s $HOME/ugly-todo/src/main.py $HOME/bin/utd
 ```
 
 ## You might be interested
 
 - [Taskbook (task and notes command line)](https://github.com/klaussinani/taskbook)
-
-![utd](screenshots/utd.png)

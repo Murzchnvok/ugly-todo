@@ -1,6 +1,8 @@
 <h1 align="center">Ugly To-Do</h1>
 <h3 align="center">A nice way to create tasks and save notes offline from your terminal!</h3>
-<div align="center"><img src="screenshots/utd.png" /></div>
+<div align="center">
+    <img src="https://github.com/Murzchnvok/ugly-todo/blob/main/screenshots/utd.png?raw=true" />
+</div>
 
 <p>This tool do just what I wanted it to do, but it's opensource and unlicense, so feel free to create your own version of this.</p>
 

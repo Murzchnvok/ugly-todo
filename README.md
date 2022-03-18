@@ -94,4 +94,5 @@ Some useful options:
 
 ## You might be interested
 
+- [utd (made in rust)](https://github.com/kawaki-san/utd-rs)
 - [Taskbook (task and notes command line)](https://github.com/klaussinani/taskbook)

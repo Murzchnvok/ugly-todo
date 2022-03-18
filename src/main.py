@@ -8,23 +8,23 @@ from utd.app import UglyToDo
 def main():
     utd = UglyToDo()
 
-    if args.add:
-        if args.priority:
-            utd.add_task(args.add, args.priority[0])
+    if task := args.add:
+        if priority := args.priority:
+            utd.add(task, priority)
         else:
-            utd.add_task(args.add)
+            utd.add(task)
 
-    elif args.note:
-        utd.add_note(args.note)
+    elif note := args.note:
+        utd.add(note, is_task=False)
 
-    elif args.check:
-        utd.check(args.check)
+    elif id_list := args.check:
+        utd.check(id_list)
 
-    elif args.begin:
-        utd.begin(args.begin)
+    elif id_list := args.begin:
+        utd.begin(id_list)
 
-    elif args.remove:
-        utd.remove(args.remove)
+    elif id_list := args.remove:
+        utd.remove(id_list)
 
     elif args.clear:
         utd.clear()

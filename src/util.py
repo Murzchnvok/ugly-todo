@@ -1,7 +1,5 @@
 from rich import print
-from rich.padding import Padding
-
-PaddingSize = tuple[int, int] | tuple[int, int, int, int]
+from rich.padding import Padding, PaddingDimensions
 
 NOTIFICATION_TYPE = {
     "success": ("green", "s"),
@@ -11,9 +9,7 @@ NOTIFICATION_TYPE = {
 
 
 def notify(
-    message: str,
-    type_: str = "success",
-    padding: PaddingSize = (1, 1)
+    message: str, type_: str = "success", padding: PaddingDimensions = (1, 1)
 ) -> None:
     type_ = "[b {}]:regional_indicator_{}:".format(*NOTIFICATION_TYPE[type_])
     print(Padding(f"{type_}  {message}", padding))

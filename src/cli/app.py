@@ -1,7 +1,8 @@
 from typing import Any
 
 from rich import print
-from rich.padding import Padding
+from rich.padding import Padding, PaddingDimensions
+
 from util import notify
 
 PRIORITY_TYPE = {
@@ -11,15 +12,26 @@ PRIORITY_TYPE = {
 }
 
 
-def task_icons(is_done: bool, priority: str) -> tuple[str, str]:
-    is_done_icon = "[blue]:heavy_minus_sign:"
-    if is_done:
-        is_done_icon = "[d green]:white_check_mark:"
-
+def task_icons(is_done: bool, priority: str) -> tuple[str, str, str]:
+    done_icon = "[d green]:white_check_mark:" if is_done else "[blue]:heavy_minus_sign:"
     color, icon = PRIORITY_TYPE[priority]
     priority = f"[{color}]:{icon}:"
 
-    return is_done_icon, priority
+    return done_icon, priority, color
+
+
+def item_section(
+    title: str,
+    items: list[str],
+    notify_suffix: str,
+    title_padding: PaddingDimensions = (1, 0, 0, 3),
+    item_padding: PaddingDimensions = (0, 0, 0, 5),
+) -> None:
+    print(Padding(f"[b]{title}", title_padding))
+    if items:
+        [print(Padding(item, item_padding)) for item in items]
+    else:
+        notify(f"you don't have any {notify_suffix}", "info", item_padding)
 
 
 def show(ugly_list: dict[str, Any]) -> None:
@@ -32,10 +44,11 @@ def show(ugly_list: dict[str, Any]) -> None:
         for id_, item in ugly_list.items():
             if item.get("is_task"):
                 name, tags, priority, _, is_done, in_progress = item.values()
-                is_done_icon, priority_icon = task_icons(is_done, priority)
+                done_icon, priority_icon, color = task_icons(is_done, priority)
                 task = (
-                    f"{priority_icon}{id_:>2}. {is_done_icon} "
-                    f"[b white]{name} [green]{tags}")
+                    f"{priority_icon}{id_:>2}. {done_icon} "
+                    f"[b white]{name} [{color}]{tags}"
+                )
 
                 if in_progress:
                     tasks_progress.append(task)
@@ -52,28 +65,9 @@ def show(ugly_list: dict[str, Any]) -> None:
             Padding(f"[b]My Board [red][{len(tasks_done)}/{total_tasks}]", (1, 0, 0, 1))
         )
 
-        print(Padding("[b]To-Do", (1, 0, 0, 3)))
-        if tasks := tasks_todo:
-            [print(Padding(task, (0, 5))) for task in tasks]
-        else:
-            notify("you don't have any tasks to do", "info", (0, 0, 0, 5))
-
-        print(Padding("[b]In Progress", (1, 0, 0, 3)))
-        if tasks := tasks_progress:
-            [print(Padding(task, (0, 5))) for task in tasks]
-        else:
-            notify("you don't have any tasks in progress", "info", (0, 0, 0, 5))
-
-        print(Padding("[b]Done", (1, 0, 0, 3)))
-        if tasks := tasks_done:
-            [print(Padding(task, (0, 5))) for task in tasks]
-        else:
-            notify("you don't have any completed tasks", "info", (0, 0, 0, 5))
-
-        print(Padding("[b]Notes", (1, 0, 0, 1)))
-        if notes:
-            [print(Padding(note, (0, 3))) for note in notes]
-        else:
-            notify("you don't have any notes", "info", (0, 0, 0, 3))
+        item_section("To-Do", tasks_todo, "tasks to do")
+        item_section("In Progress", tasks_progress, "tasks in progress")
+        item_section("Done", tasks_done, "completed tasks")
+        item_section("Notes", notes, "notes", (1, 0, 0, 1), (0, 0, 0, 3))
     else:
         notify("No task/note has been created.", "info")

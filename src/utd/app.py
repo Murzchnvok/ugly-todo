@@ -41,33 +41,20 @@ class UglyToDo:
     def save_to_json(self) -> None:
         json.dump(self.ugly_list, open(self.TASK_FILE, "w"), indent=4)
 
-    def format_task_tag(self, task: list[str]) -> tuple[str, str]:
-        name: str = ""
-        tags: str = ""
-
-        for item in task:
-            if item.startswith("@"):
-                tags += f"{item} "
-            else:
-                name += f"{item} "
-
-        return name.strip(), tags.strip()
-
-    def add_task(self, item: list[str], priority: str = "2") -> None:
+    def add(self, items: list[str], priority: str = "2", is_task=True) -> None:
         id_ = self.set_id()
-        name, tags = self.format_task_tag(item)
-        self.ugly_list[id_] = Task(name, tags, priority).__dict__
-        notify(f"Task created: {id_}")
-        self.save_to_json()
-
-    def add_note(self, item: list[str]) -> None:
-        id_ = self.set_id()
-        self.ugly_list[id_] = Note(" ".join(item).strip()).__dict__
-        notify(f"Note created: {id_}")
+        if is_task:
+            name = " ".join(item for item in items if not item.startswith("@"))
+            tags = " ".join(item for item in items if item.startswith("@"))
+            self.ugly_list[id_] = Task(name, tags, priority).__dict__
+            notify(f"Task created: {id_}")
+        else:
+            self.ugly_list[id_] = Note(" ".join(items)).__dict__
+            notify(f"Note created: {id_}")
         self.save_to_json()
 
     def invert_key_values(self, id_list: list[str], key_1: str, key_2: str) -> None:
-        not_found: str = ""
+        not_found: list[str] = []
 
         for id_ in id_list:
             try:
@@ -77,10 +64,10 @@ class UglyToDo:
                 else:
                     item[key_1], item[key_2] = True, False
             except KeyError:
-                not_found += f"{id_} "
+                not_found.append(id_)
 
         if not_found:
-            notify(f"It's a note or couldn't find task: {not_found.strip()}", "error")
+            notify(f"It's a note or couldn't find task: {' '.join(not_found)}", "error")
         self.save_to_json()
 
     def check(self, id_list: list[str]) -> None:
@@ -90,28 +77,26 @@ class UglyToDo:
         self.invert_key_values(id_list, "in_progress", "is_done")
 
     def remove(self, id_list: list[str]) -> None:
-        deleted: str = ""
-        not_found: str = ""
+        deleted: list[str] = []
+        not_found: list[str] = []
 
         for id_ in id_list:
             try:
                 self.ugly_list.pop(id_)
-                deleted += f"{id_} "
+                deleted.append(id_)
             except KeyError:
-                not_found += f"{id_} "
+                not_found.append(id_)
 
         if deleted:
-            notify(f"Deleted item(s): {deleted.strip()}")
+            notify(f"Deleted item(s): {' '.join(deleted)}")
 
         if not_found:
-            notify(f"Couldn't find item(s): {not_found.strip()}", "error")
+            notify(f"Couldn't find item(s): {' '.join(not_found)}", "error")
         self.save_to_json()
 
     def clear(self) -> None:
-        id_list: list[str] = [
-            id_ for id_, item in self.ugly_list.items() if item.get("is_done")
-        ]
-        if id_list:
+        id_list = (id_ for id_, item in self.ugly_list.items() if item.get("is_done"))
+        if id_list := list(id_list):
             self.remove(id_list)
         else:
             notify("No task to be deleted.", "info")

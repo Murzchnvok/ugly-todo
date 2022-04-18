@@ -10,7 +10,7 @@ def main():
 
     if task := args.add:
         if priority := args.priority:
-            utd.add(task, priority)
+            utd.add(task, priority[0])
         else:
             utd.add(task)
 

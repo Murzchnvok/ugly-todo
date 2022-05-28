@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from ugly_todo.util import notify
+from .util import notify
 
 
 @dataclass(slots=True)
@@ -50,10 +50,10 @@ class UglyToDo:
             name = " ".join(item for item in items if not item.startswith("@"))
             tags = " ".join(item for item in items if item.startswith("@"))
             self.ugly_list[id_] = asdict(Task(name, tags, priority))
-            notify(f"Task created: {id_}")
+            notify(f"Task created: {id_}", pad=(1, 1, 1))
         else:
             self.ugly_list[id_] = asdict(Note(" ".join(items)))
-            notify(f"Note created: {id_}")
+            notify(f"Note created: {id_}", pad=(1, 1, 1))
         self.save_to_json()
 
     def invert_key_values(self, id_list: list[str], key_1: str, key_2: str) -> None:
@@ -70,7 +70,7 @@ class UglyToDo:
                 not_found.append(id_)
 
         if not_found:
-            notify(f"It's a note or couldn't find task: {' '.join(not_found)}", "error")
+            notify(f"note or couldn't find: {' '.join(not_found)}", "error", (1, 1, 1))
         self.save_to_json()
 
     def check(self, id_list: list[str]) -> None:
@@ -91,10 +91,10 @@ class UglyToDo:
                 not_found.append(id_)
 
         if deleted:
-            notify(f"Deleted item(s): {' '.join(deleted)}")
+            notify(f"deleted: {' '.join(deleted)}", pad=(1, 1, 1))
 
         if not_found:
-            notify(f"Couldn't find item(s): {' '.join(not_found)}", "error")
+            notify(f"couldn't find: {' '.join(not_found)}", "error", (1, 1, 1))
         self.save_to_json()
 
     def clear(self) -> None:
@@ -102,7 +102,7 @@ class UglyToDo:
         if id_list := list(id_list):
             self.remove(id_list)
         else:
-            notify("No task to be deleted.", "info")
+            notify("no task to be deleted!", "info")
 
     def sort_ids(self) -> None:
         ugly_list_values: list[Any] = list(self.ugly_list.values())

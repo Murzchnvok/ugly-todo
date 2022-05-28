@@ -74,24 +74,6 @@ Add a note:
 utd -n Keep Calm and STUDY
 ```
 
-Using options from rich module:
-
-```bash
-utd -a Metropolis '[red]@book @read'
-```
-
-```bash
-utd -n Keep Calm and '[i s blue]HACK THE PLANET'
-```
-
-Some useful options:
-
-- [color] -> color name
-- [d] -> dim
-- [i] -> italic
-- [s] -> strike
-- [u] -> underline
-
 ## You might be interested
 
 - [utd (made in rust)](https://github.com/kawaki-san/utd-rs)

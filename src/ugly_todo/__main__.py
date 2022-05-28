@@ -1,21 +1,14 @@
 import argparse
 
+from ugly_todo import cli, utd
+
 USAGE_MESSAGE = """
 
 Creating task/note (tags/priority are optional for tasks):
 ~$ %(prog)s -a simple task @tag
-~$ %(prog)s -a Metropolis '[blue]@book @read' -p 1
-~$ %(prog)s -n Keep Calm and '[i s blue]HACK THE PLANET'
-
-Rich options:
-[color] -> color name
-[d] -> dim
-[i] -> italic
-[s] -> strike
-[u] -> underline
-
+~$ %(prog)s -a Metropolis @book @read -p 1
+~$ %(prog)s -n Keep Calm and DO SOMETHING
 """
-
 
 parser = argparse.ArgumentParser(
     usage=USAGE_MESSAGE,
@@ -83,4 +76,38 @@ parser.add_argument(
     help="sort all tasks/notes IDs",
 )
 
-args = parser.parse_args()
+
+def main() -> None:
+    args = parser.parse_args()
+    todo = utd.UglyToDo()
+
+    if task := args.add:
+        if priority := args.priority:
+            todo.add(task, priority[0])
+        else:
+            todo.add(task)
+
+    elif note := args.note:
+        todo.add(note, is_task=False)
+
+    elif id_list := args.check:
+        todo.check(id_list)
+
+    elif id_list := args.begin:
+        todo.begin(id_list)
+
+    elif id_list := args.remove:
+        todo.remove(id_list)
+
+    elif args.clear:
+        todo.clear()
+
+    elif args.sort:
+        todo.sort_ids()
+
+    else:
+        cli.show(todo.ugly_list)
+
+
+if __name__ == "__main__":
+    main()

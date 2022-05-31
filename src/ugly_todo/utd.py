@@ -102,7 +102,7 @@ class UglyToDo:
         if id_list := list(id_list):
             self.remove(id_list)
         else:
-            notify("no task to be deleted!", "info")
+            notify("no task to be deleted!", "info", (1, 1, 1))
 
     def sort_ids(self) -> None:
         ugly_list_values: list[Any] = list(self.ugly_list.values())

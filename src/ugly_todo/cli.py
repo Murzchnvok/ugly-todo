@@ -4,7 +4,7 @@ from colored import attr, fg
 
 from .util import PaddingSize, notify, print_pad
 
-PRIORITY_COLOR = {"1": f"{fg(9)}", "2": f"{fg(10)}", "3": f"{fg(12)}"}
+PRIORITY_COLOR = {"1": fg(9), "2": fg(10), "3": fg(12)}
 
 
 def item_section(

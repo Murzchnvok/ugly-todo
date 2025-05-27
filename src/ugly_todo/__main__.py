@@ -48,7 +48,7 @@ parser.add_argument(
     help="check/uncheck task as complete",
 )
 parser.add_argument(
-    "-b",
+    "-s",
     metavar="id",
     dest="begin",
     type=str,
